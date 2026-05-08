@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纪念日 - 时光记录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5f0 0%, #d4ede5 50%, #c0e5db 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d7d68;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(45, 125, 104, 0.15);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        .public-memory {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(45, 125, 104, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        .public-memory h2 {
+            color: #3d8d7a;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .memory-date {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            font-size: 0.75rem;
+            color: #6a9f8d;
+            margin-bottom: 16px;
+        }
+
+        .counter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 80px;
+            box-shadow: 0 4px 15px rgba(45, 125, 104, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .time-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3d8d7a;
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            color: #6a9f8d;
+            margin-top: 5px;
+        }
+
+        .add-section {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(45, 125, 104, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .add-section h3 {
+            color: #3d8d7a;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #5a8f7d;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #a8d4c8;
+            border-radius: 14px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #3d6d5d;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            min-height: 48px;
+        }
+
+        .form-group input[type="date"] {
+            line-height: 1.5;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3d8d7a;
+            box-shadow: 0 0 0 3px rgba(61, 141, 122, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(145deg, #4d9d8a, #3d8d7a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(61, 141, 122, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(61, 141, 122, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .private-section {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(45, 125, 104, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 25px;
+        }
+
+        .private-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .private-section h3 {
+            color: #3d8d7a;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .btn-add {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #4d9d8a, #3d8d7a);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(61, 141, 122, 0.3);
+            line-height: 1;
+            padding: 0;
+        }
+
+        .btn-add:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(61, 141, 122, 0.4);
+        }
+
+        .btn-add:active {
+            transform: scale(0.95);
+        }
+
+        .memory-list {
+            list-style: none;
+        }
+
+        .memory-item {
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .memory-item.past {
+            background: rgba(255, 248, 231, 0.7);
+            box-shadow: 0 4px 15px rgba(218, 165, 32, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .memory-item.future {
+            background: rgba(224, 255, 240, 0.7);
+            border: 1px solid rgba(184, 230, 208, 0.8);
+            box-shadow: 0 4px 15px rgba(45, 125, 104, 0.1);
+        }
+
+        .memory-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .memory-name-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .memory-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #3d6d5d;
+            text-align: center;
+        }
+
+        .status-text {
+            font-size: 0.85rem;
+            font-weight: normal;
+            color: #8ab0a0;
+        }
+
+        .time-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .days-display {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .days-display .time-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3d6d5d;
+        }
+
+        .days-display .time-label {
+            font-size: 0.9rem;
+            color: #5a8f7d;
+        }
+
+        .time-details {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .time-item {
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+
+        .time-details .time-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #5a8f7d;
+        }
+
+        .time-details .time-label {
+            font-size: 0.65rem;
+            color: #8ab0a0;
+        }
+
+        .btn-delete {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: #e8f5f0;
+            color: #6a9f8d;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-delete:hover {
+            background: #d4ede5;
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6a9f8d;
+            font-size: 1rem;
+            padding: 20px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: linear-gradient(145deg, #98fb98, #90ee90);
+            color: #2e8b57;
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+        }
+
+        .toast.error {
+            background: linear-gradient(145deg, #ffb6c1, #ffc0cb);
+            color: #cd5c5c;
+            box-shadow: 0 4px 15px rgba(205, 92, 92, 0.3);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: rgba(240, 250, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px 24px 0 0;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 -8px 40px rgba(61, 141, 173, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-bottom: none;
+            transform: translateY(100%);
+            transition: all 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+
+        .modal h3 {
+            color: #4a90b8;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(145deg, #dcdcdc, #c0c0c0);
+            color: #5d4e37;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-cancel:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .public-memory, .private-section {
+                padding: 20px;
+            }
+
+            .memory-item {
+                padding: 18px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            .public-memory, .private-section {
+                padding: 15px;
+                border-radius: 16px;
+            }
+
+            .public-memory h2 {
+                font-size: 1.4rem;
+            }
+
+            .memory-date {
+                font-size: 0.65rem;
+                top: 8px;
+                left: 12px;
+            }
+
+            .time-unit {
+                min-width: 55px;
+                padding: 10px 8px;
+                border-radius: 10px;
+            }
+
+            .time-value {
+                font-size: 1.3rem;
+            }
+
+            .time-label {
+                font-size: 0.65rem;
+            }
+
+            .memory-item {
+                padding: 16px 12px;
+                margin-bottom: 12px;
+                border-radius: 12px;
+            }
+
+            .memory-name {
+                font-size: 1.2rem;
+            }
+
+            .status-text {
+                font-size: 0.75rem;
+            }
+
+            .btn-add {
+                width: 40px;
+                height: 40px;
+                font-size: 1.6rem;
+            }
+
+            .btn-delete {
+                width: 32px;
+                height: 32px;
+                font-size: 1.1rem;
+            }
+
+            .days-display .time-value {
+                font-size: 2rem;
+            }
+
+            .days-display .time-label {
+                font-size: 0.75rem;
+            }
+
+            .time-details {
+                gap: 12px;
+            }
+
+            .time-details .time-value {
+                font-size: 0.8rem;
+            }
+
+            .time-details .time-label {
+                font-size: 0.6rem;
+            }
+
+            .modal {
+                padding: 25px 20px;
+                border-radius: 20px 20px 0 0;
+                max-height: 90vh;
+            }
+
+            .modal h3 {
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+            }
+
+            .form-group input {
+                padding: 15px;
+                font-size: 1rem;
+                min-height: 52px;
+            }
+
+            .form-group input[type="date"] {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+
+            .btn-submit, .btn-cancel {
+                padding: 15px;
+                font-size: 1rem;
+            }
+
+            .toast {
+                padding: 12px 20px;
+                font-size: 0.85rem;
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 360px) {
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .time-unit {
+                min-width: 48px;
+                padding: 8px 6px;
+            }
+
+            .time-value {
+                font-size: 1.1rem;
+            }
+
+            .memory-name {
+                font-size: 1.1rem;
+            }
+
+            .status-text {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ANNIVERSARY</h1>
+
+        <div class="public-memory">
+            <h2>雪海</h2>
+            <div class="memory-date">2024年12月4日</div>
+            <div class="counter" id="publicCounter">
+                <div class="time-unit">
+                    <span class="time-value" id="publicDays">0</span>
+                    <span class="time-label">天</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="publicHours">0</span>
+                    <span class="time-label">时</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="publicMinutes">0</span>
+                    <span class="time-label">分</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="publicSeconds">0</span>
+                    <span class="time-label">秒</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="private-section">
+            <div class="private-section-header">
+                <h3>past</h3>
+                <button class="btn-add" id="btnAddPast">+</button>
+            </div>
+            <ul class="memory-list" id="pastList">
+                <li class="empty-state">还没有过去的纪念日</li>
+            </ul>
+        </div>
+
+        <div class="private-section">
+            <div class="private-section-header">
+                <h3>future</h3>
+                <button class="btn-add" id="btnAdd">+</button>
+            </div>
+            <ul class="memory-list" id="futureList">
+                <li class="empty-state">还没有未来的纪念日，快来添加一个吧~</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h3>添加纪念日</h3>
+            <form id="addForm">
+                <div class="form-group">
+                    <label for="memoryName">纪念日名称</label>
+                    <input type="text" id="memoryName" placeholder="例如：在一起的日子" required>
+                </div>
+                <div class="form-group">
+                    <label for="memoryDate">日期</label>
+                    <input type="date" id="memoryDate" required>
+                </div>
+                <button type="submit" class="btn-submit">添加纪念日</button>
+                <button type="button" class="btn-cancel" id="btnCancel">取消</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const PUBLIC_DATE = '2024-12-04';
+        const STORAGE_KEY = 'memory_days';
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        function calculateDuration(startDateStr) {
+            const startDate = new Date(startDateStr);
+            const now = new Date();
+            const diff = now - startDate;
+
+            if (diff < 0) {
+                const absDiff = Math.abs(diff);
+                const seconds = Math.floor(absDiff / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
+                const days = Math.floor(hours / 24);
+                
+                const remainingHours = hours % 24;
+                const remainingMinutes = minutes % 60;
+                const remainingSeconds = seconds % 60;
+
+                return {
+                    days,
+                    hours: remainingHours,
+                    minutes: remainingMinutes,
+                    seconds: remainingSeconds,
+                    future: true
+                };
+            }
+
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            const remainingHours = hours % 24;
+            const remainingMinutes = minutes % 60;
+            const remainingSeconds = seconds % 60;
+
+            return {
+                days,
+                hours: remainingHours,
+                minutes: remainingMinutes,
+                seconds: remainingSeconds,
+                future: false
+            };
+        }
+
+        function updatePublicCounter() {
+            const duration = calculateDuration(PUBLIC_DATE);
+            document.getElementById('publicDays').textContent = duration.days.toString();
+            document.getElementById('publicHours').textContent = duration.hours.toString().padStart(2, '0');
+            document.getElementById('publicMinutes').textContent = duration.minutes.toString().padStart(2, '0');
+            document.getElementById('publicSeconds').textContent = duration.seconds.toString().padStart(2, '0');
+        }
+
+        function updatePrivateCounters() {
+            const memories = getMemories();
+            let needReRender = false;
+            
+            memories.forEach(memory => {
+                const duration = calculateDuration(memory.date);
+                const item = document.querySelector(`[data-id="${memory.id}"]`);
+                if (item) {
+                    const wasFuture = item.classList.contains('future');
+                    
+                    item.querySelector('.days').textContent = duration.days.toString();
+                    item.querySelector('.hours').textContent = duration.hours.toString().padStart(2, '0');
+                    item.querySelector('.minutes').textContent = duration.minutes.toString().padStart(2, '0');
+                    item.querySelector('.seconds').textContent = duration.seconds.toString().padStart(2, '0');
+                    
+                    if (!duration.future && wasFuture) {
+                        needReRender = true;
+                        showToast(`${memory.name} 已到达！`);
+                    }
+                }
+            });
+            
+            if (needReRender) {
+                renderMemoryList();
+            }
+        }
+
+        function getMemories() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('读取数据失败:', e);
+                return [];
+            }
+        }
+
+        function saveMemories(memories) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(memories));
+                return true;
+            } catch (e) {
+                console.error('保存数据失败:', e);
+                return false;
+            }
+        }
+
+        function addMemory(name, date) {
+            const memories = getMemories();
+            const newMemory = {
+                id: Date.now().toString(),
+                name,
+                date
+            };
+            memories.push(newMemory);
+            if (saveMemories(memories)) {
+                renderMemoryList();
+                return true;
+            }
+            return false;
+        }
+
+        function deleteMemory(id) {
+            const memories = getMemories().filter(m => m.id !== id);
+            if (saveMemories(memories)) {
+                renderMemoryList();
+                return true;
+            }
+            return false;
+        }
+
+        function renderMemoryList() {
+            const pastList = document.getElementById('pastList');
+            const futureList = document.getElementById('futureList');
+            let memories = getMemories();
+
+            const now = new Date();
+            const pastMemories = memories.filter(m => new Date(m.date) <= now);
+            const futureMemories = memories.filter(m => new Date(m.date) > now);
+
+            pastMemories.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateB - dateA;
+            });
+
+            futureMemories.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateA - dateB;
+            });
+
+            if (pastMemories.length === 0) {
+                pastList.innerHTML = '<li class="empty-state">还没有过去的纪念日</li>';
+            } else {
+                pastList.innerHTML = pastMemories.map(memory => `
+                <li class="memory-item past" data-id="${memory.id}">
+                    <div class="memory-date">${formatDate(memory.date)}</div>
+                    <div class="memory-name-wrapper">
+                        <span class="memory-name">${memory.name}</span>
+                        <span class="status-text">已经过去</span>
+                    </div>
+                    <div class="time-display">
+                        <div class="days-display">
+                            <span class="time-value days">0</span>
+                            <span class="time-label">天</span>
+                        </div>
+                        <div class="time-details">
+                            <span class="time-item"><span class="time-value hours">00</span><span class="time-label">时</span></span>
+                            <span class="time-item"><span class="time-value minutes">00</span><span class="time-label">分</span></span>
+                            <span class="time-item"><span class="time-value seconds">00</span><span class="time-label">秒</span></span>
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="handleDelete('${memory.id}')">×</button>
+                </li>
+                `).join('');
+            }
+
+            if (futureMemories.length === 0) {
+                futureList.innerHTML = '<li class="empty-state">还没有未来的纪念日，快来添加一个吧~</li>';
+            } else {
+                futureList.innerHTML = futureMemories.map(memory => `
+                <li class="memory-item future" data-id="${memory.id}">
+                    <div class="memory-date">${formatDate(memory.date)}</div>
+                    <div class="memory-name-wrapper">
+                        <span class="status-text">距离</span>
+                        <span class="memory-name">${memory.name}</span>
+                        <span class="status-text">还有</span>
+                    </div>
+                    <div class="time-display">
+                        <div class="days-display">
+                            <span class="time-value days">0</span>
+                            <span class="time-label">天</span>
+                        </div>
+                        <div class="time-details">
+                            <span class="time-item"><span class="time-value hours">00</span><span class="time-label">时</span></span>
+                            <span class="time-item"><span class="time-value minutes">00</span><span class="time-label">分</span></span>
+                            <span class="time-item"><span class="time-value seconds">00</span><span class="time-label">秒</span></span>
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="handleDelete('${memory.id}')">×</button>
+                </li>
+                `).join('');
+            }
+
+            updatePrivateCounters();
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+        }
+
+        function handleDelete(id) {
+            if (deleteMemory(id)) {
+                showToast('删除成功');
+            } else {
+                showToast('删除失败', 'error');
+            }
+        }
+
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+            document.getElementById('memoryName').value = '';
+            document.getElementById('memoryDate').value = '';
+        }
+
+        document.getElementById('btnAdd').addEventListener('click', openModal);
+        document.getElementById('btnAddPast').addEventListener('click', openModal);
+
+        document.getElementById('btnCancel').addEventListener('click', closeModal);
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('addForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('memoryName').value.trim();
+            const date = document.getElementById('memoryDate').value;
+
+            if (!name) {
+                showToast('请输入纪念日名称', 'error');
+                return;
+            }
+
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!dateRegex.test(date)) {
+                showToast('请选择有效的日期', 'error');
+                return;
+            }
+
+            if (addMemory(name, date)) {
+                showToast('添加成功');
+                closeModal();
+            } else {
+                showToast('添加失败，请稍后重试', 'error');
+            }
+        });
+
+        function init() {
+            updatePublicCounter();
+            renderMemoryList();
+            
+            setInterval(() => {
+                updatePublicCounter();
+                updatePrivateCounters();
+            }, 1000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
